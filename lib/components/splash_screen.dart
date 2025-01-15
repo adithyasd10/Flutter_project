@@ -34,17 +34,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => const StudentTeacherPage(),
-      transitionDuration: const Duration(milliseconds: 1500), // Slide duration increased
+      transitionDuration: const Duration(milliseconds: 2000), // Extended duration for smoother transition
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0); // Slide in from bottom
-        const end = Offset.zero;
-        const curve = Curves.easeInOut;
+        final fadeAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut, // Smooth easing curve
+        );
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(
-          position: offsetAnimation,
+        return FadeTransition(
+          opacity: fadeAnimation,
           child: child,
         );
       },
@@ -53,15 +51,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    const Color g1 = Color(0xff8E9EAB); // Soft gray-blue
-    const Color g2 = Color(0xffDADFE2); // Darker version of light gray
+    const Color blackish = Color(0xFF1C1C1C); // Deep blackish background
+    const Color gray = Color(0xFF2A2A2A); // Slightly lighter gray for gradient
 
     return Scaffold(
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [g1, g2],
+            colors: [blackish, gray],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -79,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             const Text(
               "Guiding every step of the way.",
               style: TextStyle(
-                color: Color(0xFF555555),
+                color: Colors.white70,
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
               ),
