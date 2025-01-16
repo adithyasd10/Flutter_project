@@ -32,7 +32,6 @@ class StudentTeacherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF000000), // Black background
       body: Stack(
         children: [
           // Decorative background gradient
@@ -40,9 +39,9 @@ class StudentTeacherPage extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF1E1E1E), Color(0xFF2A2A2A)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFFFFFFF), Color(0xFFE5E5E5)], // White to light gray gradient
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
             ),
@@ -77,7 +76,7 @@ class StudentTeacherPage extends StatelessWidget {
                   const Text(
                     "Login as",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
@@ -91,7 +90,7 @@ class StudentTeacherPage extends StatelessWidget {
                       child: ZoomIn(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEEF2F3), // Light gray background
+                            color: const Color(0xFFF5F5F5), // Light gray background
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'register_page.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import '../components/square_tile.dart';
@@ -21,13 +22,15 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF000000), // Black background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF1E1E1E), Color(0xFF2A2A2A)], // Matching gradient
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFFFFF), // White
+              Color(0xFFE5E5E5), // Light Gray
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -56,7 +59,7 @@ class LoginPage extends StatelessWidget {
                           ? 'Welcome back, dear Student!'
                           : 'Welcome back, respected Teacher!',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -65,28 +68,28 @@ class LoginPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Username textfield with rounded corners
+                    // Username textfield
                     MyTextField(
                       controller: usernameController,
                       hintText: 'Username',
                       obscureText: false,
-                      backgroundColor: const Color(0xFF2A2A2A),
-                      textColor: Colors.white,
+                      backgroundColor: const Color(0xFFF5F5F5),
+                      textColor: Colors.black,
                       borderColor: Colors.grey,
-                      borderRadius: 12, // Use int value
+                      borderRadius: 25,
                     ),
 
                     const SizedBox(height: 15),
 
-                    // Password textfield with rounded corners
+                    // Password textfield
                     MyTextField(
                       controller: passwordController,
                       hintText: 'Password',
                       obscureText: true,
-                      backgroundColor: const Color(0xFF2A2A2A),
-                      textColor: Colors.white,
+                      backgroundColor: const Color(0xFFF5F5F5),
+                      textColor: Colors.black,
                       borderColor: Colors.grey,
-                      borderRadius: 12, // Use int value
+                      borderRadius: 25,
                     ),
 
                     const SizedBox(height: 10),
@@ -96,19 +99,19 @@ class LoginPage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Text(
                         'Forgot Password?',
-                        style: TextStyle(color: Colors.grey[400]),
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
                     ),
 
                     const SizedBox(height: 25),
 
-                    // Sign in button with rounded corners and shadow
+                    // Sign in button
                     MyButton(
                       onTap: signUserIn,
                       text: 'Sign In',
-                      backgroundColor: const Color(0xFF8E9EAB), // Matching button color
-                      textColor: Colors.black,
-                      borderRadius: 12, // Use int value
+                      backgroundColor: const Color(0xFF6E7C7C), // Matching button color
+                      textColor: Colors.white,
+                      borderRadius: 25,
                       shadowColor: Colors.black.withOpacity(0.2),
                     ),
 
@@ -161,12 +164,30 @@ class LoginPage extends StatelessWidget {
                       children: [
                         const Text(
                           'Not a member?',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: Colors.black54),
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
                           onTap: () {
-                            print('Register now tapped');
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => RegisterPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(1.0, 0.0);
+                                  const end = Offset.zero;
+                                  const curve = Curves.ease;
+
+                                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                  var offsetAnimation = animation.drive(tween);
+
+                                  return SlideTransition(
+                                    position: offsetAnimation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
                           },
                           child: const Text(
                             'Register now',

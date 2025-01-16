@@ -68,6 +68,7 @@ flutter:
       - assets/animations/Animation - 1736930668540.json
       - assets/animations/teacher_animation.json
       - assets/animations/student_animation.json
+      - assets/animations/register_page.json
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
