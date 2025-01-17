@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../components/my_button.dart';
@@ -12,9 +13,64 @@ class RegisterPage extends StatelessWidget {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Method to show a pop-up dialog
+  void showPopup(BuildContext context, String message, bool isSuccess) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            isSuccess ? 'Success' : 'Error',
+            style: TextStyle(
+              color: isSuccess ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.black),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Register user method
-  void registerUser() {
-    print("Registering user...");
+  void registerUser(BuildContext context) async {
+    if (passwordController.text != confirmPasswordController.text) {
+      showPopup(context, 'Passwords do not match', false);
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword();
+      showPopup(context, 'Registration successful!', true);
+      Navigator.pushReplacementNamed(context, '/home');
+    } catch (e) {
+      showPopup(context, 'Registration failed: ${e.toString()}', false);
+    }
+  }
+
+  Future<void> createUserWithEmailAndPassword() async {
+    final userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    print(userCredential);
   }
 
   @override
@@ -110,7 +166,7 @@ class RegisterPage extends StatelessWidget {
 
                   // Register button
                   MyButton(
-                    onTap: registerUser,
+                    onTap: () => registerUser(context),
                     text: 'Register',
                     backgroundColor: const Color(0xFF6E7C7C),
                     textColor: Colors.white,

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication package
 import 'register_page.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import '../components/square_tile.dart';
+import 'homepage.dart'; // Import HomePage
 
 class LoginPage extends StatelessWidget {
-  final String role; // Role parameter to determine if Student or Teacher
+  final String role;
 
   LoginPage({super.key, required this.role});
 
@@ -14,9 +16,54 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
+  // Firebase authentication instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // Sign user in method
-  void signUserIn() {
-    print("Signing in as $role");
+  Future<void> signUserIn(BuildContext context) async {
+    final email = usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    try {
+      // Firebase sign-in logic
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Welcome back, $role! Login successful."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate to HomePage after successful login
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      // Handle error and display a message
+      print("Error code: ${e.code}");
+      String errorMessage = '';
+      if (e.code == 'invalid-credential') {
+        errorMessage = " Incorrect credentials, Please try again.";
+      } else if (e.code == 'invalid-email') {
+        errorMessage = " Incorrect email, Please try again.";
+      } else if (e.code == 'missing-password') {
+        errorMessage = "enter a password ";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      // Handle any other errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An unexpected error occurred: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -107,9 +154,9 @@ class LoginPage extends StatelessWidget {
 
                     // Sign in button
                     MyButton(
-                      onTap: signUserIn,
+                      onTap: () => signUserIn(context),
                       text: 'Sign In',
-                      backgroundColor: const Color(0xFF6E7C7C), // Matching button color
+                      backgroundColor: const Color(0xFF6E7C7C),
                       textColor: Colors.white,
                       borderRadius: 25,
                       shadowColor: Colors.black.withOpacity(0.2),
@@ -172,13 +219,17 @@ class LoginPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => RegisterPage(),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        RegisterPage(),
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
                                   const begin = Offset(1.0, 0.0);
                                   const end = Offset.zero;
                                   const curve = Curves.ease;
 
-                                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                  var tween = Tween(begin: begin, end: end)
+                                      .chain(CurveTween(curve: curve));
                                   var offsetAnimation = animation.drive(tween);
 
                                   return SlideTransition(
