@@ -56,8 +56,8 @@ class RegisterPage extends StatelessWidget {
 
     try {
       await createUserWithEmailAndPassword();
-      showPopup(context, 'Registration successful!', true);
       Navigator.pushReplacementNamed(context, '/home');
+      showPopup(context, 'Registration successful!', true);
     } catch (e) {
       showPopup(context, 'Registration failed: ${e.toString()}', false);
     }
