@@ -118,7 +118,7 @@ class LoginPage extends StatelessWidget {
                     // Username textfield
                     MyTextField(
                       controller: usernameController,
-                      hintText: 'Username',
+                      hintText: 'Email',
                       obscureText: false,
                       backgroundColor: const Color(0xFFF5F5F5),
                       textColor: Colors.black,
