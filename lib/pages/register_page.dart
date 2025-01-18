@@ -108,27 +108,6 @@ class RegisterPage extends StatelessWidget {
     }
   }
 
-  Future<void> loginUser(BuildContext context) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      if (userCredential.user?.emailVerified ?? false) {
-        // Email is verified, proceed to home page
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        // Email is not verified
-        showPopup(
-            context, 'Please verify your email before logging in.', false);
-      }
-    } catch (e) {
-      showPopup(context, 'Login failed: ${e.toString()}', false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
