@@ -54,23 +54,79 @@ class RegisterPage extends StatelessWidget {
       return;
     }
 
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
     try {
-      await createUserWithEmailAndPassword();
-      Navigator.pushReplacementNamed(context, '/home');
-      showPopup(context, 'Registration successful!', true);
+      await createUserWithEmailAndPassword(context);
+
+      // Close the loading dialog
+      Navigator.of(context).pop();
+
+      // Show success popup
+      showPopup(context,
+          'Registration successful! Please verify your email to log in.', true);
     } catch (e) {
+      // Close the loading dialog
+      Navigator.of(context).pop();
+
+      // Show error popup
       showPopup(context, 'Registration failed: ${e.toString()}', false);
     }
   }
 
-  Future<void> createUserWithEmailAndPassword() async {
-    final userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
+  Future<void> createUserWithEmailAndPassword(BuildContext context) async {
+    try {
+      // Create the user with email and password
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-    print(userCredential);
+      // Update the displayName with the username
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.updateProfile(displayName: usernameController.text.trim());
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+      }
+
+      // Send email verification
+      await userCredential.user?.sendEmailVerification();
+      print("Verification email sent to ${userCredential.user?.email}");
+    } catch (e) {
+      throw Exception('Failed to register user: $e');
+    }
+  }
+
+  Future<void> loginUser(BuildContext context) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      if (userCredential.user?.emailVerified ?? false) {
+        // Email is verified, proceed to home page
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        // Email is not verified
+        showPopup(
+            context, 'Please verify your email before logging in.', false);
+      }
+    } catch (e) {
+      showPopup(context, 'Login failed: ${e.toString()}', false);
+    }
   }
 
   @override
