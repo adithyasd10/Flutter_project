@@ -6,6 +6,8 @@ import 'pages/register_page.dart';
 import 'pages/homepage.dart'; // Import the HomePage
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'pages/teacher_home_page.dart'; // Import Teacher HomePage
+import 'pages/student_home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +32,9 @@ class MyApp extends StatelessWidget {
               role: '',
             ),
         '/register': (context) => RegisterPage(),
-        '/home': (context) => HomePage(), // New route for HomePage
+        '/teacher_home': (context) =>
+            TeacherHomePage(), // Add Teacher HomePage route
+        '/student_home': (context) => StudentHomePage(),
       },
     );
   }
