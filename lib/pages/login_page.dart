@@ -5,7 +5,6 @@ import 'register_page.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import '../components/square_tile.dart';
-import 'homepage.dart'; // Import HomePage
 
 class LoginPage extends StatelessWidget {
   final String role;
@@ -33,7 +32,13 @@ class LoginPage extends StatelessWidget {
       );
       if (userCredential.user?.emailVerified ?? false) {
         // Email is verified, proceed to home page
-        Navigator.pushReplacementNamed(context, '/home');
+        if (role == 'teacher') {
+          Navigator.pushReplacementNamed(
+              context, '/teacher_home'); // Teacher homepage route
+        } else if (role == 'student') {
+          Navigator.pushReplacementNamed(
+              context, '/student_home'); // Student homepage route
+        }
       } else {
         // Email is not verified
         ScaffoldMessenger.of(context).showSnackBar(

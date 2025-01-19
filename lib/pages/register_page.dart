@@ -74,6 +74,7 @@ class RegisterPage extends StatelessWidget {
       // Show success popup
       showPopup(context,
           'Registration successful! Please verify your email to log in.', true);
+      // Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       // Close the loading dialog
       Navigator.of(context).pop();
