@@ -5,7 +5,6 @@ import 'register_page.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import '../components/square_tile.dart';
-import 'homepage.dart'; // Import HomePage
 
 class LoginPage extends StatelessWidget {
   final String role;
@@ -13,7 +12,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key, required this.role});
 
   // Text editing controllers
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // Firebase authentication instance
@@ -21,22 +20,36 @@ class LoginPage extends StatelessWidget {
 
   // Sign user in method
   Future<void> signUserIn(BuildContext context) async {
-    final email = usernameController.text.trim();
+    final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
     try {
       // Firebase sign-in logic
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Welcome back, $role! Login successful."),
-          backgroundColor: Colors.green,
-        ),
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(), // Show success message
       );
+      if (userCredential.user?.emailVerified ?? false) {
+        // Email is verified, proceed to home page
+        if (role == 'teacher') {
+          Navigator.pushReplacementNamed(
+              context, '/teacher_home'); // Teacher homepage route
+        } else if (role == 'student') {
+          Navigator.pushReplacementNamed(
+              context, '/student_home'); // Student homepage route
+        }
+      } else {
+        // Email is not verified
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please verify your email before logging in.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
 
       // Navigate to HomePage after successful login
-      Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       // Handle error and display a message
       print("Error code: ${e.code}");
@@ -117,7 +130,7 @@ class LoginPage extends StatelessWidget {
 
                     // Username textfield
                     MyTextField(
-                      controller: usernameController,
+                      controller: emailController,
                       hintText: 'Email',
                       obscureText: false,
                       backgroundColor: const Color(0xFFF5F5F5),

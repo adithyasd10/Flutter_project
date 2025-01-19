@@ -74,6 +74,7 @@ class RegisterPage extends StatelessWidget {
       // Show success popup
       showPopup(context,
           'Registration successful! Please verify your email to log in.', true);
+      // Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       // Close the loading dialog
       Navigator.of(context).pop();
@@ -105,27 +106,6 @@ class RegisterPage extends StatelessWidget {
       print("Verification email sent to ${userCredential.user?.email}");
     } catch (e) {
       throw Exception('Failed to register user: $e');
-    }
-  }
-
-  Future<void> loginUser(BuildContext context) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      if (userCredential.user?.emailVerified ?? false) {
-        // Email is verified, proceed to home page
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        // Email is not verified
-        showPopup(
-            context, 'Please verify your email before logging in.', false);
-      }
-    } catch (e) {
-      showPopup(context, 'Login failed: ${e.toString()}', false);
     }
   }
 
